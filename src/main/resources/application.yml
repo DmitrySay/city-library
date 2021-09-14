@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: city-library
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/city_library
+    username: postgres
+    password: secret
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none  #update  create
+
+  jackson:
+    default-property-inclusion: always
+
+  flyway:
+    enabled: true
+    validate-on-migrate: true
+
+logging:
+  level:
+    ROOT: INFO
+    com.example: DEBUG
+    org.springframework.cache: trace
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.SQL: debug
+
+springdoc:
+  swagger-ui:
+    enabled: true #true|false
