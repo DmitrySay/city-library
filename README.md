@@ -30,13 +30,21 @@
 A repository link to your GitHub account from where you can clone the solution and run it with little-tozero effort.
 Should you need any further information, please do not hesitate to contact the sender of this task
 
-
-##How to get started application:
+## How to get started application:
 
 Execute from root directory:
+
 ```
 docker-compose up -d
 ```
 
-- Then run backend Application main. 
+- Then run backend Application main.
 - Flyway migration create tables and populate cities from the cities.csv file.
+
+### Default backend API users:
+
+- ADMIN creds email=admin@email.com, password=123456789
+- USER creds email=user@email.com, password=123456789
+
+### Link to SWAGGER 
+http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config

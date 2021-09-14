@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: city-library
+    name: city-librar
 
   datasource:
     url: jdbc:postgresql://localhost:5432/city_library
@@ -11,7 +11,7 @@ spring:
     password: secret
     driverClassName: org.postgresql.Driver
   jpa:
-    show-sql: true
+    show-sql: true    #true|false
     hibernate:
       ddl-auto: none  #update  create
 
@@ -22,14 +22,20 @@ spring:
     enabled: true
     validate-on-migrate: true
 
-logging:
-  level:
-    ROOT: INFO
-    com.example: DEBUG
-    org.springframework.cache: trace
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-    org.hibernate.SQL: debug
+#logging:
+#  level:
+#    ROOT: info
+#    com.example: debug
+#    org.springframework.cache: trace
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.hibernate.SQL: debug
+#    org.springframework.web.client.RestTemplate: trace
 
 springdoc:
   swagger-ui:
     enabled: true #true|false
+
+jwt:
+  token:
+    secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
+    expired: 3600000
