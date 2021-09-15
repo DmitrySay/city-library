@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "permissions")
 public class Permission {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String name;
 }
