@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.CityDto;
 import com.example.service.CityService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.example.security.SecurityPermission.AUTHORITY_ALL;
+import static com.example.security.SecurityPermission.AUTHORITY_CREATE;
 import static com.example.security.SecurityPermission.AUTHORITY_UPDATE;
 
 @RestController
@@ -87,5 +90,13 @@ public class CityController {
     @PutMapping(value = "{cityId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public CityDto update(@PathVariable("cityId") Long cityId, @Valid @RequestBody CityDto cityDto) {
         return cityService.update(cityId, cityDto);
+    }
+
+    @Hidden
+    @PreAuthorize("hasAuthority('" + AUTHORITY_ALL + "') or hasAuthority('" + AUTHORITY_CREATE + "')")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public CityDto create(@Valid @RequestBody CityDto cityDto) {
+        return cityService.create(cityDto);
     }
 }

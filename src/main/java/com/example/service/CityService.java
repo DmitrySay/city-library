@@ -44,4 +44,10 @@ public class CityService {
         cityMapper.updateEntityFromDto(cityDto, city);
         return cityMapper.toDto(cityRepository.save(city));
     }
+
+    @Transactional
+    public CityDto create(CityDto cityDto) {
+        City city = cityMapper.toEntity(cityDto);
+        return cityMapper.toDto(cityRepository.save(city));
+    }
 }

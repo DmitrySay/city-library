@@ -1,0 +1,17 @@
+-- ROLES
+INSERT INTO roles(name)
+VALUES ('ROLE_ADMIN');
+INSERT INTO roles(name)
+VALUES ('ROLE_USER');
+
+-- PERMISSIONS
+INSERT INTO permissions(name)
+VALUES ('AUTHORITY_ALL');
+INSERT INTO permissions(name)
+VALUES ('AUTHORITY_CREATE');
+INSERT INTO permissions(name)
+VALUES ('AUTHORITY_READ');
+INSERT INTO permissions(name)
+VALUES ('AUTHORITY_UPDATE');
+INSERT INTO permissions(name)
+VALUES ('AUTHORITY_DELETE');

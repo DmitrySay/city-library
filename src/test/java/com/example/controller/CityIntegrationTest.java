@@ -28,7 +28,7 @@ class CityIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     public void setUp() {
         city = City.builder()
-                .id(1L).name("test name").photo("https://test-url.jpg")
+                .id(null).name("test name").photo("https://test-url.jpg")
                 .build();
         cityRepository.save(city);
     }
