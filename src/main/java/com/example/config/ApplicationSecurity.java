@@ -44,8 +44,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
-            .passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -62,10 +61,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider))
-                .and()
-                .logout()
-                .deleteCookies("JSESSIONID");
+                .apply(new JwtConfigurer(jwtTokenProvider));
     }
 
     @Bean
