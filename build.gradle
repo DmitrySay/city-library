@@ -52,13 +52,12 @@ dependencies {
     //lombok
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation "org.projectlombok:lombok:${lombokVersion}"
+    //lombok-mapstruct
     annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
-    implementation 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-
+    implementation "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-
     testCompileOnly "org.mapstruct:mapstruct:${mapstructVersion}"
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testImplementation "org.testcontainers:testcontainers:${testContainersVersion}"
