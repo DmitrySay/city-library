@@ -11,7 +11,7 @@ spring:
     password: secret
     driverClassName: org.postgresql.Driver
   jpa:
-    show-sql: true    #true|false
+    show-sql: false    #true|false
     hibernate:
       ddl-auto: none  #update  create
 

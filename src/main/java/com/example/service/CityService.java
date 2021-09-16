@@ -1,10 +1,10 @@
 package com.example.service;
 
 import com.example.dto.CityDto;
+import com.example.exception.NotFoundException;
 import com.example.mapper.CityMapper;
 import com.example.model.City;
 import com.example.repository.CityRepository;
-import com.example.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -23,10 +23,7 @@ public class CityService {
     @Transactional(readOnly = true)
     public City getById(Long cityId) {
         return cityRepository.findById(cityId)
-                .orElseThrow(() -> {
-                    log.warn("City with id = {} is not found", cityId);
-                    return new NotFoundException("City is not found.");
-                });
+                .orElseThrow(() -> new NotFoundException("City is not found."));
     }
 
     @Transactional(readOnly = true)
