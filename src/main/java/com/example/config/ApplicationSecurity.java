@@ -38,6 +38,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private static final String SWAGGER_ENDPOINT = "/swagger-ui/**";
     private static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs/**";
     public static final String LOGIN_ENDPOINT = "/api/auth/login";
+    public static final String CITY_ENDPOINT = "/api/cities/**";
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -58,6 +59,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, LOGIN_ENDPOINT).permitAll()
+                .antMatchers(HttpMethod.GET, CITY_ENDPOINT).permitAll()
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -80,7 +82,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "OPTIONS", "POST", "PUT"));
         configuration.setAllowedHeaders(Arrays.asList(
                 "X-Requested-With",
                 "Origin",
@@ -91,14 +93,14 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         ));
 
         configuration.setExposedHeaders(Arrays.asList(
-                "Access-Control-Allow-Headers",
                 "Authorization",
                 "x-xsrf-token",
-                "Access-Control-Allow-Methods",
                 "Origin",
                 "Accept",
                 "X-Requested-With",
                 "Content-Type",
+                "Access-Control-Allow-Methods",
+                "Access-Control-Allow-Headers",
                 "Access-Control-Request-Method",
                 "Access-Control-Request-Headers"
         ));

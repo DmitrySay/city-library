@@ -2,7 +2,6 @@ package com.example.controller;
 
 import com.example.dto.CityDto;
 import com.example.service.CityService;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -79,6 +78,17 @@ public class CityController {
         return cityService.getAll(search, pageable);
     }
 
+    @Operation(summary = "Get city", description = "Get city by its id")
+    @ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = "application/json",
+            schema = @Schema(implementation = CityDto.class)))
+    @ApiResponse(responseCode = "400", description = "Bad Request")
+    @ApiResponse(responseCode = "404", description = "Not found")
+    @ApiResponse(responseCode = "500", description = "Server Error")
+    @GetMapping("{cityId}")
+    public CityDto getById(@PathVariable Long cityId) {
+        return cityService.getByCityId(cityId);
+    }
+
     @Operation(summary = "Update city", description = "Update city")
     @ApiResponse(responseCode = "200", description = "Success",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = CityDto.class)))
@@ -92,7 +102,6 @@ public class CityController {
         return cityService.update(cityId, cityDto);
     }
 
-    @Hidden
     @PreAuthorize("hasAuthority('" + AUTHORITY_ALL + "') or hasAuthority('" + AUTHORITY_CREATE + "')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

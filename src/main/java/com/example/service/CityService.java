@@ -27,6 +27,11 @@ public class CityService {
     }
 
     @Transactional(readOnly = true)
+    public CityDto getByCityId(Long cityId) {
+        return cityMapper.toDto(this.getById(cityId));
+    }
+
+    @Transactional(readOnly = true)
     public Page<CityDto> getAll(String search, Pageable pageable) {
         Page<City> page;
         if (StringUtils.hasLength(search)) {
