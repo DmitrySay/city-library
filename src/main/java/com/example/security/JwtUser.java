@@ -3,7 +3,6 @@ package com.example.security;
 import com.example.model.Permission;
 import com.example.model.Role;
 import com.example.model.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,6 @@ public class JwtUser extends User implements UserDetails {
         this.enabled = enabled;
     }
 
-    @JsonIgnore
     public Long getId() {
         return super.getId();
     }

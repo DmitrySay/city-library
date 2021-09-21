@@ -59,7 +59,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, LOGIN_ENDPOINT).permitAll()
-                .antMatchers(HttpMethod.GET, CITY_ENDPOINT).permitAll()
+                .antMatchers(CITY_ENDPOINT).permitAll()
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
