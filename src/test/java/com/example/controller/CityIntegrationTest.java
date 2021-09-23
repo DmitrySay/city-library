@@ -13,9 +13,14 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.List;
 
+import static com.example.security.SecurityPermission.AUTHORITY_ALL;
+import static com.example.security.SecurityPermission.AUTHORITY_READ;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -53,5 +58,36 @@ class CityIntegrationTest extends BaseIntegrationTest {
         assertEquals(city.getId(), cityDto.getId());
         assertEquals(city.getName(), cityDto.getName());
         assertEquals(city.getPhoto(), cityDto.getPhoto());
+    }
+
+    @WithMockUser(username = "admin_mock_all", authorities = AUTHORITY_ALL, password = "12356")
+    @Test
+    void updateCityAndGetOk() throws Exception {
+        CityDto city = CityDto.builder()
+                .id(1L).name("test update name").photo("https://test--update-url.jpg")
+                .build();
+
+        mockMvc.perform(put("/api/cities/{cityId}", "1")
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(city)
+                        ))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @WithMockUser(username = "user_mock", authorities = AUTHORITY_READ, password = "12356")
+    @Test
+    void updateCityAndGetForbidden() throws Exception {
+        CityDto city = CityDto.builder()
+                .id(1L).name("test update name").photo("https://test--update-url.jpg")
+                .build();
+
+        mockMvc.perform(put("/api/cities/{cityId}", "1")
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(city)
+                        ))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{'message':'Access is denied'}"))
+                .andExpect(content().json("{'status': 403 }"))
+                .andDo(print());
     }
 }
