@@ -3,12 +3,11 @@ package com.example.exception.handler;
 import com.example.exception.error.ErrorResponseDto;
 import com.example.exception.error.FieldValidationError;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -59,5 +58,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                         fieldError.getDefaultMessage())
         );
         return new ResponseEntity<>(error, error.getStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handle(BadCredentialsException ex) {
+        log.error("Caught BadCredentialsException: {}", ex.getMessage());
+        ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .message(ex.getMessage())
+                .timestamp(ZonedDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDto);
     }
 }
