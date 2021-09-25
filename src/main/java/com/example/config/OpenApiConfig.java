@@ -17,16 +17,16 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .components(new Components().addSecuritySchemes("bearer-jwt",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
                                 .in(SecurityScheme.In.HEADER).name("Authorization")))
                 .info(
-                        new Info().title("City library API")
+                        new Info()
+                                .title("City library API")
                                 .version("1.0")
-                                .description("This is a sample City library API created using springdocs - " +
-                                        "a library for OpenAPI 3 with spring boot.")
+                                .description("This is 'City library' application API")
                                 .termsOfService("http://swagger.io/terms/")
-                                .license(new License().name("Apache 2.0")
-                                        .url("http://springdoc.org"))
+                                .license(new License().name("Apache 2.0").url("http://springdoc.org"))
                 )
                 .addSecurityItem(new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")));
     }

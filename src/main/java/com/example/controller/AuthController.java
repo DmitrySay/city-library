@@ -55,8 +55,8 @@ public class AuthController {
             return new AuthResponseDto(email, token);
 
         } catch (Exception ex) {
-            log.warn("Invalid email or password" + ex.getMessage());
-            throw new BadCredentialsException("Invalid email or password");
+            log.warn("Invalid email or password." + ex.getMessage());
+            throw new BadCredentialsException("Invalid email or password.");
         }
     }
 

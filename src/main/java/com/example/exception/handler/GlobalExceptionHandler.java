@@ -3,28 +3,25 @@ package com.example.exception.handler;
 import com.example.exception.error.ErrorResponseDto;
 import com.example.exception.error.FieldValidationError;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.ZonedDateTime;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
-@ControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+@RestControllerAdvice
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(Throwable.class)
-    ResponseEntity<?> handleException(Throwable ex) {
+    ResponseEntity<?> handle(Throwable ex) {
         log.error("Caught unhandled exception: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
@@ -41,17 +38,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
     }
 
-    @Override
-    public ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         log.error("Caught MethodArgumentNotValidException: {}", ex.getMessage());
         BindingResult result = ex.getBindingResult();
         final FieldValidationError error = FieldValidationError.builder()
                 .status(BAD_REQUEST)
                 .message("Field validation error")
                 .build();
-
         result.getFieldErrors().forEach(fieldError -> error
                 .addFieldError(fieldError.getObjectName(),
                         fieldError.getField(),

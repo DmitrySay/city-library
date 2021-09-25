@@ -11,15 +11,14 @@ import java.util.List;
 @Data
 @Builder
 public class FieldValidationError {
+    private HttpStatus status;
+    private String message;
 
-  private HttpStatus status;
-  private String message;
-  
-  @Builder.Default
-  private List<FieldError> fieldErrors = new ArrayList<>();
+    @Builder.Default
+    private List<FieldError> fieldErrors = new ArrayList<>();
 
-  public void addFieldError(String object, String path, String message) {
-    FieldError error = new FieldError(object, path, message);
-    fieldErrors.add(error);
-  }
+    public void addFieldError(String object, String path, String message) {
+        FieldError error = new FieldError(object, path, message);
+        fieldErrors.add(error);
+    }
 }

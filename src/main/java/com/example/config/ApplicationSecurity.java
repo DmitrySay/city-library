@@ -3,7 +3,6 @@ package com.example.config;
 
 import com.example.security.JwtAuthenticationEntryPoint;
 import com.example.security.JwtConfigurer;
-import com.example.security.JwtTokenProvider;
 import com.example.security.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -39,13 +38,15 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs/**";
     public static final String LOGIN_ENDPOINT = "/api/auth/login";
     public static final String CITY_ENDPOINT = "/api/cities/**";
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtConfigurer jwtConfigurer;
     private final JwtUserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider));
+                .apply(jwtConfigurer);
     }
 
     @Bean
@@ -91,7 +92,6 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 "Authorization",
                 "Allow"
         ));
-
         configuration.setExposedHeaders(Arrays.asList(
                 "Authorization",
                 "x-xsrf-token",
@@ -109,7 +109,6 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 

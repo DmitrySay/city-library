@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -61,9 +62,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    public Authentication getAuthentication(String token) throws AuthenticationException {
+        try {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
+            return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        } catch (Exception exception) {
+            throw new BadCredentialsException("JWT token invalid.");
+        }
     }
 
     public String getUsername(String token) {
@@ -86,11 +91,11 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return !claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new BadCredentialsException("JWT token is expired or invalid");
+            throw new BadCredentialsException("JWT token is expired or invalid.");
         }
     }
 
-    private Set<String> getRoleNames(Collection<Role> userRoles) {
+    public Set<String> getRoleNames(Collection<Role> userRoles) {
         Set<String> rolesNames = new HashSet<>();
         if (userRoles == null) {
             return rolesNames;
