@@ -6,7 +6,7 @@ spring:
     name: city-librar
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/city_library
+    url: jdbc:postgresql://city_library_db:5432/city_library
     username: postgres
     password: secret
     driverClassName: org.postgresql.Driver

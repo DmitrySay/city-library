@@ -7,7 +7,11 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1'
-sourceCompatibility = '11'
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("11")
+    targetCompatibility = JavaVersion.toVersion("11")
+}
 
 configurations {
     compileOnly {
@@ -23,9 +27,11 @@ ext {
     flywayVersion = '7.12.0'
     springdocVersion = '1.5.10'
     testContainersVersion = '1.15.2'
+    jsonwebtokenVersion = '0.9.1'
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -38,7 +44,7 @@ dependencies {
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation "io.jsonwebtoken:jjwt:${jsonwebtokenVersion}"
     //swagger
     implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
     implementation "org.springdoc:springdoc-openapi-data-rest:${springdocVersion}"
@@ -62,6 +68,10 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testImplementation "org.testcontainers:testcontainers:${testContainersVersion}"
     testImplementation "org.testcontainers:postgresql:${testContainersVersion}"
+}
+
+bootJar {
+    archiveFileName = "${archiveBaseName.get()}.${archiveExtension.get()}"
 }
 
 test {

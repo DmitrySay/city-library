@@ -35,10 +35,10 @@ Should you need any further information, please do not hesitate to contact the s
 Execute from root directory:
 
 ```
-docker-compose up -d
+bash startup.sh
 ```
 
-- Then run backend Application main.
+- Script build backend image and database image then start containers.
 - Flyway migration create tables and populate cities from the cities.csv file.
 
 ### Default backend API users:
@@ -48,3 +48,6 @@ docker-compose up -d
 
 ### Link to SWAGGER 
 http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
+
+### Link to ui
+- https://github.com/DmitrySay/city-library-ui
