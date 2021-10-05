@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.dto.CityDto;
 import com.example.service.CityService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -102,6 +103,7 @@ public class CityController {
         return cityService.update(cityId, cityDto);
     }
 
+    @Hidden
     @PreAuthorize("hasAuthority('" + AUTHORITY_ALL + "') or hasAuthority('" + AUTHORITY_CREATE + "')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)

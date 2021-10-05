@@ -28,6 +28,7 @@ class CityIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
     private CityRepository cityRepository;
+
     private City city;
 
     @BeforeEach

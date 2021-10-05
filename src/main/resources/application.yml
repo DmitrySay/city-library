@@ -22,15 +22,6 @@ spring:
     enabled: true
     validate-on-migrate: true
 
-#logging:
-#  level:
-#    ROOT: info
-#    com.example: debug
-#    org.springframework.cache: trace
-#    org.hibernate.type.descriptor.sql.BasicBinder: trace
-#    org.hibernate.SQL: debug
-#    org.springframework.web.client.RestTemplate: trace
-
 springdoc:
   swagger-ui:
     enabled: true #true|false

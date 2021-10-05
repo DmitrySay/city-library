@@ -30,7 +30,7 @@
 A repository link to your GitHub account from where you can clone the solution and run it with little-tozero effort.
 Should you need any further information, please do not hesitate to contact the sender of this task
 
-## How to get started application:
+## How to get started application in docker:
 
 Execute from root directory:
 
@@ -40,6 +40,7 @@ bash startup.sh
 
 - Script build backend image and database image then start containers.
 - Flyway migration create tables and populate cities from the cities.csv file.
+- For local development use `dev` profile. VM OPTIONS: -Dspring.profiles.active=dev
 
 ### Default backend API users:
 
