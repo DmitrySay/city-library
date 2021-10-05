@@ -35,7 +35,7 @@ public class CityService {
     public Page<CityDto> getAll(String search, Pageable pageable) {
         Page<City> page;
         if (StringUtils.hasLength(search)) {
-            page = cityRepository.findAllByName(search, pageable);
+            page = cityRepository.findAllByNameContainingIgnoreCase(search, pageable);
         } else {
             page = cityRepository.findAll(pageable);
         }
