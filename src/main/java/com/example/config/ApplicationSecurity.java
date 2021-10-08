@@ -1,23 +1,20 @@
 package com.example.config;
 
-
+import com.example.security.CustomJwtAuthenticationConverter;
 import com.example.security.JwtAuthenticationEntryPoint;
-import com.example.security.JwtConfigurer;
-import com.example.security.JwtUserDetailsService;
+import com.example.security.KeycloakAuthorityConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.BeanIds;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,36 +22,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
+@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private static final String SWAGGER_ENDPOINT = "/swagger-ui/**";
     private static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs/**";
     public static final String LOGIN_ENDPOINT = "/api/auth/login";
     public static final String CITY_ENDPOINT = "/api/cities/**";
-    private final JwtConfigurer jwtConfigurer;
-    private final JwtUserDetailsService userDetailsService;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    @Override
-    protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder());
-    }
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.cors().and()
                 .csrf().disable()
                 .httpBasic().disable()
-                .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
@@ -63,18 +46,17 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .apply(jwtConfigurer);
+                .oauth2ResourceServer()
+                .jwt()
+                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                .and().authenticationEntryPoint(jwtAuthenticationEntryPoint);
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
-
-    @Bean(BeanIds.AUTHENTICATION_MANAGER)
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
+        CustomJwtAuthenticationConverter jwtAuthenticationConverter = new CustomJwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeycloakAuthorityConverter());
+        return jwtAuthenticationConverter;
     }
 
     @Bean
@@ -82,7 +64,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.setAllowedOrigins(
-                Arrays.asList("http://localhost:3000" , "http://localhost") //only for demo purpose
+                Arrays.asList("http://localhost:3000", "http://localhost") //only for demo purpose
         );
         configuration.setAllowedMethods(Arrays.asList("GET", "OPTIONS", "POST", "PUT"));
         configuration.setAllowedHeaders(Arrays.asList(
@@ -112,6 +94,4 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
 }

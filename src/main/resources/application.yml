@@ -1,9 +1,11 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
-    name: city-librar
+    name: city-libra
+  profiles:
+    active: dev
 
   datasource:
     url: jdbc:postgresql://city_library_db:5432/city_library
@@ -22,11 +24,17 @@ spring:
     enabled: true
     validate-on-migrate: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: 'http://localhost:8180/auth/realms/city-library/protocol/openid-connect/certs'
+
 springdoc:
   swagger-ui:
     enabled: true #true|false
 
-jwt:
-  token:
-    secret: '"${JWT_GENERATOR_SIGNATURE_SECRET:pleaseChangeThisSecretForANewOne}"'
-    expired: 3600000
+app:
+  keycloak:
+    auth-url: 'http://localhost:8180/auth/realms/city-library/protocol/openid-connect'
+    client-id: 'city-library-client'

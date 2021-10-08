@@ -1,0 +1,9 @@
+###
+POST http://localhost:8180/auth/realms/city-library/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=city-library-client&grant_type=password&scope=openid&username=admin@email.com&password=123456789
+
+> {% client.global.set("token", response.body.access_token); %}
+
+

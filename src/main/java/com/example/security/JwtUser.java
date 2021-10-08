@@ -1,73 +1,23 @@
 package com.example.security;
 
-import com.example.model.Permission;
-import com.example.model.Role;
-import com.example.model.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Getter;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Instant;
+import java.util.Map;
 
-public class JwtUser extends User implements UserDetails {
-    private final boolean enabled;
+@Getter
+public class JwtUser extends Jwt {
+    private Long userId;
+    private String email;
 
-    public JwtUser(Long id, String email, String password, Set<Role> roles, boolean enabled) {
-        super(id, email, password, roles);
-        this.enabled = enabled;
+    public JwtUser(String tokenValue, Instant issuedAt, Instant expiresAt, Map<String, Object> headers, Map<String, Object> claims) {
+        super(tokenValue, issuedAt, expiresAt, headers, claims);
     }
 
-    public Long getId() {
-        return super.getId();
-    }
-
-    @Override
-    public String getUsername() {
-        return super.getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public String getPassword() {
-        return super.getPassword();
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new HashSet<>();
-        Set<Permission> permissions = new HashSet<>();
-        Set<Role> roles = super.getRoles();
-        if (roles == null) {
-            return authorities;
-        }
-        roles.forEach((role) -> {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-            permissions.addAll(role.getPermissions());
-        });
-        permissions.forEach((authority) -> {
-            authorities.add(new SimpleGrantedAuthority(authority.getName()));
-        });
-        return authorities;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
+    public JwtUser(Jwt jwt, Long userId, String email) {
+        super(jwt.getTokenValue(), jwt.getIssuedAt(), jwt.getExpiresAt(), jwt.getHeaders(), jwt.getClaims());
+        this.userId = userId;
+        this.email = email;
     }
 }

@@ -20,14 +20,15 @@ configurations {
 }
 
 ext {
-    lombokMapstructBindingVersion= '0.2.0'
+    lombokMapstructBindingVersion = '0.2.0'
     lombokVersion = '1.18.20'
     mapstructVersion = '1.4.2.Final'
     postgresqlVersion = '42.2.23'
     flywayVersion = '7.12.0'
     springdocVersion = '1.5.10'
     testContainersVersion = '1.15.2'
-    jsonwebtokenVersion = '0.9.1'
+//    jsonwebtokenVersion = '0.9.1'
+    springBootVersion = '2.5.4'
 }
 
 repositories {
@@ -44,7 +45,8 @@ dependencies {
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation "io.jsonwebtoken:jjwt:${jsonwebtokenVersion}"
+//    implementation "io.jsonwebtoken:jjwt:${jsonwebtokenVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
     //swagger
     implementation "org.springdoc:springdoc-openapi-ui:${springdocVersion}"
     implementation "org.springdoc:springdoc-openapi-data-rest:${springdocVersion}"
