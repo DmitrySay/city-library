@@ -48,7 +48,8 @@ services:
 
 networks:
   elk:
-    driver: "bridge"
+    name: web
+    external: true
 
 volumes:
   elastic_data: { }
