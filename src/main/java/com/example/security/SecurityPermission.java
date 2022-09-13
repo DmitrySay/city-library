@@ -1,9 +1,10 @@
 package com.example.security;
 
 public final class SecurityPermission {
-    public static final String AUTHORITY_ALL = "AUTHORITY_ALL";
-    public static final String AUTHORITY_CREATE = "AUTHORITY_CREATE";
-    public static final String AUTHORITY_READ = "AUTHORITY_READ";
-    public static final String AUTHORITY_UPDATE = "AUTHORITY_UPDATE";
-    public static final String AUTHORITY_DELETE = "AUTHORITY_DELETE";
+    public static final String AUTHORITY_ALL = "ALL";
+    public static final String AUTHORITY_CREATE = "CREATE";
+    public static final String AUTHORITY_READ = "READ";
+    public static final String AUTHORITY_UPDATE = "UPDATE";
+    public static final String AUTHORITY_DELETE = "DELETE";
+
 }

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Getter
@@ -19,7 +20,8 @@ import javax.persistence.Table;
 @Table(name = "permissions")
 public class Permission {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissions_seq")
+    @SequenceGenerator(name = "permissions_seq", sequenceName = "permissions_id_seq", allocationSize = 1)
     private Long id;
     private String name;
 }

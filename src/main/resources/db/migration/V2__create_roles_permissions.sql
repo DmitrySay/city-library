@@ -1,4 +1,4 @@
-create table "user"
+create table users
 (
     id       BIGSERIAL PRIMARY KEY,
     email    VARCHAR(255) not null unique,
@@ -29,7 +29,7 @@ CREATE table users_roles
 (
     user_id BIGINT NOT NULL,
     role_id BIGINT NOT NULL,
-    CONSTRAINT users_roles_fk_1 FOREIGN KEY (user_id) REFERENCES "user" (id),
+    CONSTRAINT users_roles_fk_1 FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT users_roles_fk_2 FOREIGN KEY (role_id) REFERENCES roles (id)
 );
 

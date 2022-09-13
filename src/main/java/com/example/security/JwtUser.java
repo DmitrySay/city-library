@@ -60,8 +60,8 @@ public class JwtUser extends User implements UserDetails {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
             permissions.addAll(role.getPermissions());
         });
-        permissions.forEach((authority) -> {
-            authorities.add(new SimpleGrantedAuthority(authority.getName()));
+        permissions.forEach((permission) -> {
+            authorities.add(new SimpleGrantedAuthority(permission.getName()));
         });
         return authorities;
     }
