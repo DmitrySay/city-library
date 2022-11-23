@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +29,6 @@ import java.util.Set;
 @Component
 public class JwtTokenProvider {
     private static final String BEARER = "Bearer ";
-    private static final String JWT_REGEXP = "Bearer\\s[\\w-]*\\.[\\w-]*\\.[\\w-]*";
 
     @Value("${jwt.token.secret}")
     private String secret;
@@ -52,7 +50,7 @@ public class JwtTokenProvider {
 
     public String createToken(String email, Set<Role> roles) {
         Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", this.getRoleNames(roles));
+        claims.put("roles", this.getTokenRoleNames(roles));
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
         return Jwts.builder()
@@ -64,8 +62,9 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) throws AuthenticationException {
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(getUsername(token));
-            return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+            String username = getUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } catch (Exception exception) {
             throw new BadCredentialsException("JWT token invalid.");
         }
@@ -80,9 +79,6 @@ public class JwtTokenProvider {
         if (bearerToken == null) {
             return null;
         }
-        if (!bearerToken.matches(JWT_REGEXP)) {
-            throw new BadCredentialsException(String.format("JWT token is not matching: '%s'", JWT_REGEXP));
-        }
         return bearerToken.substring(BEARER.length());
     }
 
@@ -95,16 +91,20 @@ public class JwtTokenProvider {
         }
     }
 
-    public Set<String> getRoleNames(Collection<Role> userRoles) {
-        Set<String> rolesNames = new HashSet<>();
-        if (userRoles == null) {
-            return rolesNames;
+    /**
+     * Put roles and permission from database to token
+     * then you can use @PreAuthorize - @hasAuthority
+     */
+    public Set<String> getTokenRoleNames(Set<Role> databaseUserRoles) {
+        Set<String> tokenRolesNames = new HashSet<>();
+        if (databaseUserRoles == null) {
+            return tokenRolesNames;
         }
-        userRoles.forEach((role) -> {
+        databaseUserRoles.forEach((role) -> {
             Set<Permission> permissions = role.getPermissions();
-            permissions.forEach((authority) -> rolesNames.add(authority.getName()));
-            rolesNames.add(role.getName());
+            permissions.forEach((authority) -> tokenRolesNames.add(authority.getName()));
+            tokenRolesNames.add(role.getName());
         });
-        return rolesNames;
+        return tokenRolesNames;
     }
 }
