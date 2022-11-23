@@ -1,7 +1,7 @@
 package com.example.service;
 
 import com.example.dto.CityDto;
-import com.example.exception.NotFoundException;
+import com.example.exception.RestException;
 import com.example.mapper.CityMapper;
 import com.example.model.City;
 import com.example.repository.CityRepository;
@@ -23,7 +23,7 @@ public class CityService {
     @Transactional(readOnly = true)
     public City getById(Long cityId) {
         return cityRepository.findById(cityId)
-                .orElseThrow(() -> new NotFoundException("City is not found."));
+                .orElseThrow(() -> new RestException("City is not found."));
     }
 
     @Transactional(readOnly = true)

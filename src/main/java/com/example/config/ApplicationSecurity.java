@@ -20,7 +20,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -74,13 +73,14 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .addFilterAfter(jwtLoginFilter(), JwtAuthenticationFilter.class);  // login and create token
     }
 
-
-    private JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtTokenProvider, jwtAuthenticationEntryPoint);
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtTokenProvider);
     }
 
-    private JwtLoginFilter jwtLoginFilter() throws Exception {
-        return new JwtLoginFilter(new AntPathRequestMatcher(LOGIN_ENDPOINT, "POST"), authenticationManager(), jwtTokenProvider);
+    @Bean
+    public JwtLoginFilter jwtLoginFilter() throws Exception {
+        return new JwtLoginFilter(LOGIN_ENDPOINT, authenticationManager(), jwtTokenProvider);
     }
 
     @Bean

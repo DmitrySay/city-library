@@ -1,6 +1,6 @@
 package com.example.security;
 
-import com.example.exception.NotFoundException;
+import com.example.exception.RestException;
 import com.example.model.User;
 import com.example.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User is not found."));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RestException("User is not found."));
         return new JwtUser(
                 user.getId(),
                 user.getEmail(),

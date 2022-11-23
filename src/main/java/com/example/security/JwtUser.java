@@ -48,6 +48,11 @@ public class JwtUser extends User implements UserDetails {
         return super.getPassword();
     }
 
+    /**
+     * Get user roles and permissions amd convert then all to GrantedAuthorities
+     *
+     * @return authorities
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new HashSet<>();

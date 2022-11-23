@@ -1,5 +1,6 @@
 package com.example.exception.handler;
 
+import com.example.exception.RestException;
 import com.example.exception.error.ErrorResponseDto;
 import com.example.exception.error.FieldValidationError;
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +28,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<?> handle(AccessDeniedException ex) {
+    public ErrorResponseDto handleAccessDeniedException(AccessDeniedException ex) {
         log.error("Caught AccessDeniedException: {}", ex.getMessage());
-        ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()
+        return ErrorResponseDto.builder()
                 .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .message(ex.getMessage())
                 .timestamp(ZonedDateTime.now())
                 .build();
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponseDto);
+
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error("Caught MethodArgumentNotValidException: {}", ex.getMessage());
         BindingResult result = ex.getBindingResult();
         final FieldValidationError error = FieldValidationError.builder()
@@ -55,14 +56,25 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<?> handle(BadCredentialsException ex) {
+    public ErrorResponseDto handleBadCredentialsException(BadCredentialsException ex) {
         log.error("Caught BadCredentialsException: {}", ex.getMessage());
-        ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()
+        return ErrorResponseDto.builder()
                 .status(HttpStatus.UNAUTHORIZED.value())
                 .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                 .message(ex.getMessage())
                 .timestamp(ZonedDateTime.now())
                 .build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponseDto);
+
+    }
+
+    @ExceptionHandler(RestException.class)
+    public ErrorResponseDto handleRestException(RestException ex) {
+        log.error("Caught RestException: {}", ex.getMessage());
+        return ErrorResponseDto.builder()
+                .status(BAD_REQUEST.value())
+                .error(BAD_REQUEST.getReasonPhrase())
+                .message(ex.getMessage())
+                .timestamp(ZonedDateTime.now())
+                .build();
     }
 }

@@ -1,10 +1,10 @@
 package com.example.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -16,14 +16,12 @@ import java.io.IOException;
 
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtTokenProvider jwtTokenProvider;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthenticationEntryPoint authenticationEntryPoint) {
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         Assert.notNull(jwtTokenProvider, "jwtTokenProvider cannot be null");
-        Assert.notNull(authenticationEntryPoint, "authenticationEntryPoint cannot be null");
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
     @Override
@@ -37,10 +35,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } catch (AuthenticationException ex) {
             SecurityContextHolder.clearContext();
-            logger.debug("Failed to process token authentication request", ex);
-            this.authenticationEntryPoint.commence(request, response, ex);
+            log.error("Failed to process token authentication request", ex);
+            printMessage(response, ex.getMessage());
             return;
         }
         filterChain.doFilter(request, response);
+    }
+
+    private void printMessage(HttpServletResponse response, String errorMsg) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        String message = String.format("{\"error\": \"%s\"}", errorMsg);
+        response.getOutputStream().println(message);
     }
 }
