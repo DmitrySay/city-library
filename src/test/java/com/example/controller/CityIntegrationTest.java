@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.example.security.SecurityPermission.AUTHORITY_ALL;
 import static com.example.security.SecurityPermission.AUTHORITY_READ;
+import static com.example.security.SecurityPermission.AUTHORITY_UPDATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -34,20 +35,20 @@ class CityIntegrationTest extends BaseIntegrationTest {
     @BeforeEach
     public void setUp() {
         city = City.builder()
-                .id(null).name("test name").photo("https://test-url.jpg")
+                .id(1L).name("city test name").photo("https://test-url.jpg")
                 .build();
         cityRepository.save(city);
     }
 
-    @WithMockUser(username = "admin_mock", roles = "ADMIN", password = "12356")
     @Test
-    void getAll() throws Exception {
+    void user_should_get_all_cities_by_name() throws Exception {
         String response = mockMvc.perform(get("/api/cities/")
                         .param("search", city.getName())
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+                .andReturn()
+                .getResponse().getContentAsString();
 
         JsonNode responseBody = objectMapper.readTree(response);
         JsonNode content = responseBody.path("content");
@@ -61,11 +62,12 @@ class CityIntegrationTest extends BaseIntegrationTest {
         assertEquals(city.getPhoto(), cityDto.getPhoto());
     }
 
-    @WithMockUser(username = "admin_mock_all", authorities = AUTHORITY_ALL, password = "12356")
+    // check PreAuthorize/hasAuthority
+    @WithMockUser(username = "user_mock", authorities = AUTHORITY_ALL, password = "12356")
     @Test
-    void updateCityAndGetOk() throws Exception {
+    void user_with_authorities_all_should_update_city_and_get_ok() throws Exception {
         CityDto city = CityDto.builder()
-                .id(1L).name("test update name").photo("https://test--update-url.jpg")
+                .id(1L).name("city update name").photo("https://update-test--update-url.jpg")
                 .build();
 
         mockMvc.perform(put("/api/cities/{cityId}", "1")
@@ -75,11 +77,26 @@ class CityIntegrationTest extends BaseIntegrationTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
+    @Test
+    void user_without_jwt_token_should_not_update_city_and_get_unauthorized() throws Exception {
+        CityDto city = CityDto.builder()
+                .id(1L).name("city test update name").photo("https://test--update-url.jpg")
+                .build();
+
+        mockMvc.perform(put("/api/cities/{cityId}", "1")
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(city)
+                        ))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("{'error':'Full authentication is required to access this resource'}"))
+                .andDo(print());
+    }
+
     @WithMockUser(username = "user_mock", authorities = AUTHORITY_READ, password = "12356")
     @Test
-    void updateCityAndGetForbidden() throws Exception {
+    void user_with_authorities_read_should_not_update_city_and_get_forbidden() throws Exception {
         CityDto city = CityDto.builder()
-                .id(1L).name("test update name").photo("https://test--update-url.jpg")
+                .id(1L).name("city test user update name").photo("https://user-test--update-url.jpg")
                 .build();
 
         mockMvc.perform(put("/api/cities/{cityId}", "1")
@@ -90,5 +107,19 @@ class CityIntegrationTest extends BaseIntegrationTest {
                 .andExpect(content().json("{'message':'Access is denied'}"))
                 .andExpect(content().json("{'status': 403 }"))
                 .andDo(print());
+    }
+
+    @WithMockUser(username = "user_mock", authorities = AUTHORITY_UPDATE, password = "12356")
+    @Test
+    void user_with_authorities_update_should_update_city_and_get_get_ok() throws Exception {
+        CityDto city = CityDto.builder()
+                .id(1L).name("city update name").photo("https://test--update-url.jpg")
+                .build();
+
+        mockMvc.perform(put("/api/cities/{cityId}", "1")
+                        .contentType(APPLICATION_JSON).content(objectMapper.writeValueAsString(city)
+                        ))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 }

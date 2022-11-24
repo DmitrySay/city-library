@@ -11,6 +11,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.ZonedDateTime;
@@ -27,6 +29,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponseDto handleAccessDeniedException(AccessDeniedException ex) {
         log.error("Caught AccessDeniedException: {}", ex.getMessage());
@@ -39,6 +43,8 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         log.error("Caught MethodArgumentNotValidException: {}", ex.getMessage());
@@ -55,6 +61,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, error.getStatus());
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)
     public ErrorResponseDto handleBadCredentialsException(BadCredentialsException ex) {
         log.error("Caught BadCredentialsException: {}", ex.getMessage());
@@ -67,6 +75,8 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RestException.class)
     public ErrorResponseDto handleRestException(RestException ex) {
         log.error("Caught RestException: {}", ex.getMessage());
