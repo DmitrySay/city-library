@@ -9,9 +9,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static com.example.model.UserStatus.ACTIVE;
+
 @Service
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Override
@@ -22,7 +25,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoles(),
-                true
+                ACTIVE.equals(user.getUserStatus())
         );
     }
 }

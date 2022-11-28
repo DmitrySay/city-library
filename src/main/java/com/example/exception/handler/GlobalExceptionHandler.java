@@ -1,5 +1,6 @@
 package com.example.exception.handler;
 
+import com.example.exception.RegistrationException;
 import com.example.exception.RestException;
 import com.example.exception.error.ErrorResponseDto;
 import com.example.exception.error.FieldValidationError;
@@ -87,4 +88,18 @@ public class GlobalExceptionHandler {
                 .timestamp(ZonedDateTime.now())
                 .build();
     }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RegistrationException.class)
+    public ErrorResponseDto handleRegistrationException(RegistrationException ex) {
+        log.error("Caught RegistrationException: {}", ex.getMessage());
+        return ErrorResponseDto.builder()
+                .status(BAD_REQUEST.value())
+                .error(BAD_REQUEST.getReasonPhrase())
+                .message("Email verification failed.")
+                .timestamp(ZonedDateTime.now())
+                .build();
+    }
+
 }

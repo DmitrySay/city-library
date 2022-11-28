@@ -23,6 +23,7 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 @SpringBootTest
 class CityServiceTest extends BaseIntegrationTest {
+
     private CityRepository cityRepository;
     private CityService cityService;
 

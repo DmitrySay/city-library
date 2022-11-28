@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class JwtUser extends User implements UserDetails {
+
     private final boolean enabled;
 
     public JwtUser(Long id, String email, String password, Set<Role> roles, boolean enabled) {

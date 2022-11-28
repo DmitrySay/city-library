@@ -9,7 +9,6 @@ import com.example.security.JwtUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -27,6 +26,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -40,6 +42,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private static final String SWAGGER_ENDPOINT = "/swagger-ui/**";
     private static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs/**";
     public static final String LOGIN_ENDPOINT = "/api/auth/login";
+    public static final String REGISTRATION_USER_ENDPOINT = "/api/auth/registration/user";
+    public static final String EMAIL_VERIFICATION_ENDPOINT = "/api/auth/email-verification";
     public static final String CITY_ENDPOINT = "/api/cities/**";
 
     private final JwtUserDetailsService userDetailsService;
@@ -63,8 +67,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, LOGIN_ENDPOINT).permitAll()
-                .antMatchers(HttpMethod.GET, CITY_ENDPOINT).permitAll()
+                .antMatchers(POST, LOGIN_ENDPOINT).permitAll()
+                .antMatchers(POST, REGISTRATION_USER_ENDPOINT).permitAll()
+                .antMatchers(GET, CITY_ENDPOINT).permitAll()
+                .antMatchers(GET, EMAIL_VERIFICATION_ENDPOINT).permitAll()
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()
                 .anyRequest()
                 .authenticated()

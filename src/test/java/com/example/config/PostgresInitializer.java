@@ -7,6 +7,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public class PostgresInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
     private static final String IMAGE = "postgres:13";
     private static final String TEST_DATABASE = "TEST";
     private static final String USER_NAME = "root";

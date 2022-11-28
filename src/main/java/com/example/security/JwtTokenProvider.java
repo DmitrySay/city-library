@@ -28,6 +28,7 @@ import java.util.Set;
 
 @Component
 public class JwtTokenProvider {
+
     private static final String BEARER = "Bearer ";
 
     @Value("${jwt.token.secret}")
@@ -82,6 +83,11 @@ public class JwtTokenProvider {
         return bearerToken.substring(BEARER.length());
     }
 
+    /**
+     * Check if token valid and not expired.
+     * @param token
+     * @return true/false
+     */
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
