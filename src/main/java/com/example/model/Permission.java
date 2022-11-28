@@ -19,9 +19,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "permissions")
 public class Permission {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "permissions_seq")
     @SequenceGenerator(name = "permissions_seq", sequenceName = "permissions_id_seq", allocationSize = 1)
     private Long id;
+
     private String name;
 }

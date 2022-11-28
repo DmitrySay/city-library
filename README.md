@@ -52,3 +52,15 @@ http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-confi
 
 ### Link to ui
 - https://github.com/DmitrySay/city-library-ui
+
+### Update application.yml with your Google email credentials
+
+Caused by: javax.mail.AuthenticationFailedException: 534-5.7.9 
+Application-specific password required. Learn more at
+534 5.7.9  https://support.google.com/mail/?p=InvalidSecondFactor - gsmtp
+
+To fix it, follow this guide to create an App Password
+https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor
+
+Read article
+https://mkyong.com/java/javamail-api-sending-email-via-gmail-smtp-example/

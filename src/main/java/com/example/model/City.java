@@ -21,10 +21,13 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "cities")
 public class City {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cities_seq")
     @SequenceGenerator(name = "cities_seq", sequenceName = "cities_seq")
     private Long id;
+
     private String name;
+
     private String photo;
 }

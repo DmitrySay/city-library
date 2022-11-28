@@ -25,6 +25,7 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
     @SequenceGenerator(name = "roles_seq", sequenceName = "roles_id_seq", allocationSize = 1)

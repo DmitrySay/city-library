@@ -1,8 +1,9 @@
-create table users
+CREATE TABLE users
 (
-    id       BIGSERIAL PRIMARY KEY,
-    email    VARCHAR(255) not null unique,
-    password VARCHAR(255) not null
+    id         BIGSERIAL PRIMARY KEY,
+    email      VARCHAR(255) NOT NULL UNIQUE,
+    password   VARCHAR(255) NOT NULL,
+    user_status VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE permissions
