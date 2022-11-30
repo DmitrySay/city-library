@@ -1,6 +1,8 @@
 package com.example.controller;
 
 import com.example.dto.AuthRequestDto;
+import com.example.dto.PasswordResetConfirmationRequest;
+import com.example.dto.PasswordResetRequest;
 import com.example.dto.UserDto;
 import com.example.mapper.UserMapper;
 import com.example.security.JwtUser;
@@ -37,15 +39,27 @@ public class AuthController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping("/registration/user")
-    public void register(@RequestBody AuthRequestDto requestDto) {
+    @PostMapping("/registration")
+    public void registerNewUser(@RequestBody AuthRequestDto requestDto) {
         userService.createNewRegisterUser(requestDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/email-verification")
-    public UserDto confirmRegistration(@RequestParam String token) {
+    public UserDto confirmNewUserRegistration(@RequestParam String token) {
         return userService.confirmNewUserRegistration(token);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/password-reset-request")
+    public void passwordReset(@RequestBody PasswordResetRequest passwordResetRequest) {
+        userService.processPasswordResetRequest(passwordResetRequest.getEmail());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/password-reset-confirmation")
+    public UserDto confirmPasswordReset(@RequestBody PasswordResetConfirmationRequest passwordResetConfirmationRequest) {
+        return userService.confirmPasswordReset(passwordResetConfirmationRequest);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.exception.handler;
 
+import com.example.exception.PasswordResetException;
 import com.example.exception.RegistrationException;
 import com.example.exception.RestException;
 import com.example.exception.error.ErrorResponseDto;
@@ -98,6 +99,19 @@ public class GlobalExceptionHandler {
                 .status(BAD_REQUEST.value())
                 .error(BAD_REQUEST.getReasonPhrase())
                 .message("Email verification failed.")
+                .timestamp(ZonedDateTime.now())
+                .build();
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(PasswordResetException.class)
+    public ErrorResponseDto handlePasswordResetException(PasswordResetException ex) {
+        log.error("Caught PasswordResetException: {}", ex.getMessage());
+        return ErrorResponseDto.builder()
+                .status(BAD_REQUEST.value())
+                .error(BAD_REQUEST.getReasonPhrase())
+                .message("Password reset confirmation failed.")
                 .timestamp(ZonedDateTime.now())
                 .build();
     }

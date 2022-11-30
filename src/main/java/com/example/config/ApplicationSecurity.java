@@ -42,8 +42,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private static final String SWAGGER_ENDPOINT = "/swagger-ui/**";
     private static final String SWAGGER_API_DOCS_ENDPOINT = "/v3/api-docs/**";
     public static final String LOGIN_ENDPOINT = "/api/auth/login";
-    public static final String REGISTRATION_USER_ENDPOINT = "/api/auth/registration/user";
+    public static final String REGISTRATION_USER_ENDPOINT = "/api/auth/registration";
     public static final String EMAIL_VERIFICATION_ENDPOINT = "/api/auth/email-verification";
+    public static final String EMAIL_PASSWORD_RESET_ENDPOINT = "/api/auth/password-reset-request";
+    public static final String EMAIL_CONFIRM_PASSWORD_RESET_ENDPOINT = "/api/auth/password-reset-confirmation";
     public static final String CITY_ENDPOINT = "/api/cities/**";
 
     private final JwtUserDetailsService userDetailsService;
@@ -69,6 +71,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(POST, LOGIN_ENDPOINT).permitAll()
                 .antMatchers(POST, REGISTRATION_USER_ENDPOINT).permitAll()
+                .antMatchers(POST, EMAIL_PASSWORD_RESET_ENDPOINT).permitAll()
+                .antMatchers(POST, EMAIL_CONFIRM_PASSWORD_RESET_ENDPOINT).permitAll()
                 .antMatchers(GET, CITY_ENDPOINT).permitAll()
                 .antMatchers(GET, EMAIL_VERIFICATION_ENDPOINT).permitAll()
                 .antMatchers(SWAGGER_ENDPOINT, SWAGGER_API_DOCS_ENDPOINT).permitAll()

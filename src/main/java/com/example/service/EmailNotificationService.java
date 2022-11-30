@@ -14,18 +14,22 @@ import java.util.Locale;
 public class EmailNotificationService {
 
     private static final String EMAIL_VERIFICATION_TEMPLATE = "verification.html";
+    private static final String PASSWORD_RESET_TEMPLATE = "passwordReset.html";
 
     @Value("${frontend.server.host:http://localhost:8080}")
     private String frontendServerHost;
 
-    @Value("${endpoint.email-verification:/api/auth/email-verification}")
+    @Value("${frontend.endpoint.email-verification:/api/auth/email-verification}")
     private String emailVerificationEndpoint;
+
+    @Value("${frontend.endpoint.password-reset-confirmation:/api/auth/password-reset-confirmation}")
+    private String passwordResetConfirmationEndpoint;
 
     private final SpringTemplateEngine templateEngine;
 
     private final EmailNotificationSender emailNotificationSender;
 
-    public void sendEmailConformation(String emailTo, String token) {
+    public void sendEmailVerification(String emailTo, String token) {
         String subject = "Verify your email";
         String confirmationUrl = frontendServerHost + emailVerificationEndpoint + "?token=" + token;
 
@@ -33,6 +37,23 @@ public class EmailNotificationService {
         context.setVariable("confirmationUrl", confirmationUrl);
 
         String body = templateEngine.process(EMAIL_VERIFICATION_TEMPLATE, context);
+
+        NotificationTemplate template = new NotificationTemplate();
+        template.addMailTo(emailTo);
+        template.setEmailSubject(subject);
+        template.setEmailBody(body);
+
+        emailNotificationSender.sendEmailNotification(template);
+    }
+
+    public void sendPasswordResetEmail(String emailTo, String token) {
+        String subject = "Password reset email";
+        String confirmationUrl = frontendServerHost + passwordResetConfirmationEndpoint + "?token=" + token;
+
+        Context context = new Context(Locale.ENGLISH);
+        context.setVariable("confirmationUrl", confirmationUrl);
+
+        String body = templateEngine.process(PASSWORD_RESET_TEMPLATE, context);
 
         NotificationTemplate template = new NotificationTemplate();
         template.addMailTo(emailTo);

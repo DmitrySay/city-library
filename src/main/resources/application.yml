@@ -35,6 +35,7 @@ jwt:
 frontend:
   server:
     host: { FRONTEND_HOST }
+  endpoint:
+    email-verification: { EMAIL_VERIFICATION_ENDPOINT }
+    password-reset-confirmation: { PASSWORD_RESET_CONFIRMATION_ENDPOINT }
 
-endpoint:
-  email-verification: { FRONTEND_EMAIL_VERIFICATION_PAGE }

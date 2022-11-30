@@ -1,7 +1,9 @@
 package com.example.service;
 
 import com.example.dto.AuthRequestDto;
+import com.example.dto.PasswordResetConfirmationRequest;
 import com.example.dto.UserDto;
+import com.example.exception.PasswordResetException;
 import com.example.exception.RegistrationException;
 import com.example.exception.RestException;
 import com.example.mapper.UserMapper;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.example.model.RoleNames.ROLE_USER;
+import static java.lang.String.format;
 
 @Slf4j
 @Service
@@ -34,6 +37,11 @@ public class UserService {
     private final EmailNotificationService emailNotificationService;
 
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RestException(format("User with email [%s] does not exist", email)));
+    }
+
     public boolean userExistByEmail(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.isPresent();
@@ -44,7 +52,7 @@ public class UserService {
         String email = requestDto.getEmail();
         String password = requestDto.getPassword();
         if (userExistByEmail(email)) {
-            throw new RestException(String.format("User with email [%s] already exist", email));
+            throw new RestException(format("User with email [%s] already exist", email));
         }
         User user = new User();
         user.setEmail(email);
@@ -55,7 +63,7 @@ public class UserService {
         userRepository.save(user);
 
         String token = jwtTokenProvider.createToken(email, user.getRoles());
-        emailNotificationService.sendEmailConformation(email, token);
+        emailNotificationService.sendEmailVerification(email, token);
     }
 
     public UserDto confirmNewUserRegistration(String token) {
@@ -68,16 +76,45 @@ public class UserService {
                     user.setUserStatus(UserStatus.ACTIVE);
                     return userMapper.toDto(userRepository.save(user));
                 } else {
-                    String errorMsg = String.format("Email verification failed. " +
-                            "User with email [%s] does not exist or user does not have status PENDING_VERIFICATION ", email);
+                    String errorMsg = format("Email verification failed. User with email [%s] does not exist or user does not have status pending verification ", email);
                     throw new RegistrationException(errorMsg);
                 }
             }
-            String errorMsg = "Email verification failed. JWT token is expired";
-            throw new RegistrationException(errorMsg);
+            throw new RegistrationException("Email verification failed. JWT token is expired.");
         } catch (Exception exception) {
             throw new RegistrationException(exception.getMessage());
         }
     }
 
+    public void processPasswordResetRequest(String email) {
+        User user = getUserByEmail(email);
+        String token = jwtTokenProvider.createToken(email, user.getRoles());
+        emailNotificationService.sendPasswordResetEmail(email, token);
+    }
+
+    @Transactional
+    public UserDto confirmPasswordReset(PasswordResetConfirmationRequest passwordResetConfirmationRequest) {
+        String newPassword = passwordResetConfirmationRequest.getPassword();
+        String token = passwordResetConfirmationRequest.getToken();
+        try {
+            if (jwtTokenProvider.validateToken(token)) {
+                String email = jwtTokenProvider.getUsername(token);
+                return userRepository
+                        .findByEmail(email)
+                        .map(user -> {
+                            user.setPassword(passwordEncoder.encode(newPassword));
+                            userRepository.save(user);
+                            return user;
+                        })
+                        .map(userMapper::toDto)
+                        .orElseThrow(() -> new PasswordResetException(format("Password reset confirmation failed. User with email [%s] does not exist", email)));
+            } else {
+                throw new PasswordResetException("Password reset confirmation failed. JWT token is expired.");
+            }
+        } catch (Exception exception) {
+            throw new PasswordResetException(exception.getMessage());
+        }
+    }
+
 }
+
