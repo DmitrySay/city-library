@@ -1,16 +1,17 @@
 version: '3.7'
 
 services:
-  db:
+  city-database:
+    container_name: city_database
+    image: city_database:latest
     build:
       context: .
       dockerfile: Dockerfile-db
-    container_name: city_library_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: city_library
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: secret
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
     volumes:
       - db-volume:/var/lib/postgresql/data
     ports:
@@ -19,17 +20,28 @@ services:
       - web
 
   city-service:
+    container_name: city_service
+    image: city_service:latest
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: city_library_service
     restart: unless-stopped
     environment:
-      - "SPRING_PROFILES_ACTIVE=prod" #dev
+      - SPRING_PROFILES_ACTIVE
+      - SPRING_MAIL_USERNAME
+      - SPRING_MAIL_PASSWORD
+      - POSTGRES_DB_URL
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - JWT_GENERATOR_SIGNATURE_SECRET
+      - FRONTEND_HOST
+      - EMAIL_VERIFICATION_ENDPOINT
+      - PASSWORD_RESET_CONFIRMATION_ENDPOINT
+      - JAVA_OPTS
     ports:
       - '8080:8080'
     depends_on:
-      - db
+      - city-database
     networks:
       - web
 

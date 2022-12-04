@@ -1,5 +1,6 @@
 package com.example.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -46,11 +48,4 @@ public class User {
             inverseJoinColumns = {@JoinColumn(name = "role_id")})
     private Set<Role> roles = new HashSet<>();
 
-
-    public User(Long id, String email, String password, Set<Role> roles) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.roles = roles;
-    }
 }

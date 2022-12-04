@@ -4,4 +4,4 @@
 ./gradlew clean assemble
 
 #start db and backend
-docker-compose up -d
+docker compose --env-file .env.prod up -d

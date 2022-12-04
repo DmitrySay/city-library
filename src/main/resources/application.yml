@@ -3,7 +3,17 @@ server:
 
 spring:
   application:
-    name: city-library-service
+    name: city-service
+
+  datasource:
+    url: ${POSTGRES_DB_URL:jdbc:postgresql://localhost:5432/city_library}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:secret}
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: false   #true|false
+    hibernate:
+      ddl-auto: none  #update  create
 
   jackson:
     default-property-inclusion: always
@@ -15,7 +25,7 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username:
+    username:   # add google email login and pass
     password:
     protocol: smtp
     defaultEncoding: UTF-8
@@ -34,8 +44,15 @@ jwt:
 
 frontend:
   server:
-    host: { FRONTEND_HOST }
+    host: ${FRONTEND_HOST:http://localhost:8080}
   endpoint:
-    email-verification: { EMAIL_VERIFICATION_ENDPOINT }
-    password-reset-confirmation: { PASSWORD_RESET_CONFIRMATION_ENDPOINT }
+    email-verification: ${EMAIL_VERIFICATION_ENDPOINT:/api/auth/email-verification}
+    password-reset-confirmation: ${PASSWORD_RESET_CONFIRMATION_ENDPOINT:/api/auth/password-reset-confirmation}
 
+
+#logging:
+#  level:
+#    org.springframework.cache: trace
+#    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#    org.hibernate.SQL: debug
+#    org.springframework.web.client.RestTemplate: trace

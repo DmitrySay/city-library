@@ -24,6 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getUserStatus(),
                 user.getRoles(),
                 ACTIVE.equals(user.getUserStatus())
         );

@@ -16,13 +16,13 @@ public class EmailNotificationService {
     private static final String EMAIL_VERIFICATION_TEMPLATE = "verification.html";
     private static final String PASSWORD_RESET_TEMPLATE = "passwordReset.html";
 
-    @Value("${frontend.server.host:http://localhost:8080}")
+    @Value("${frontend.server.host}")
     private String frontendServerHost;
 
-    @Value("${frontend.endpoint.email-verification:/api/auth/email-verification}")
+    @Value("${frontend.endpoint.email-verification}")
     private String emailVerificationEndpoint;
 
-    @Value("${frontend.endpoint.password-reset-confirmation:/api/auth/password-reset-confirmation}")
+    @Value("${frontend.endpoint.password-reset-confirmation}")
     private String passwordResetConfirmationEndpoint;
 
     private final SpringTemplateEngine templateEngine;

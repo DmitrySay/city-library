@@ -13,7 +13,7 @@
                     <logLevel/>
                     <loggerName/>
                     <pattern>
-                        <pattern>{"appName": "city-library-be"}</pattern>
+                        <pattern>{"appName": "city-service"}</pattern>
                     </pattern>
                     <threadName/>
                     <message/>
