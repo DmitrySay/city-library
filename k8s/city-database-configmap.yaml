@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: city-configmap
+data:
+  postgres_db_url: jdbc:postgresql://city-database-service:5432/city_library_prod
+
+

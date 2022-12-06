@@ -3,7 +3,7 @@ version: '3.7'
 services:
   city-database:
     container_name: city_database
-    image: city_database:latest
+    image: dsayushau/city_database:latest
     build:
       context: .
       dockerfile: Dockerfile-db
@@ -21,7 +21,7 @@ services:
 
   city-service:
     container_name: city_service
-    image: city_service:latest
+    image: dsayushau/city_service:latest
     build:
       context: .
       dockerfile: Dockerfile
