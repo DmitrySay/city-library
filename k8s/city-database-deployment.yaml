@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: city-database-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: city-database
+  template:
+    metadata:
+      labels:
+        app: city-database
+    spec:
+      containers:
+        - name: city-database
+          image: dsayushau/city_database:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: city-database-secret
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: city-database-secret
+                  key: postgres_password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: city-database-service
+spec:
+  selector:
+    app: city-database
+  ports:
+    - protocol: TCP
+      name: http
+      port: 5432
+      targetPort: 5432
+  type: NodePort

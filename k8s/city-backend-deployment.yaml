@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: city-backed-deployment
+  labels:
+    app: city-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: city-service
+  template:
+    metadata:
+      labels:
+        app: city-service
+    spec:
+      containers:
+        - name: city-service
+          image: dsayushau/city_service:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: POSTGRES_DB_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: city-configmap
+                  key: postgres_db_url
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: city-database-secret
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: city-database-secret
+                  key: postgres_password
+            - name: SPRING_MAIL_USERNAME
+              value: your_mail
+            - name: SPRING_MAIL_PASSWORD
+              value: your_pass
+            - name: JWT_GENERATOR_SIGNATURE_SECRET
+              value: prod_jwt_secret
+            - name: FRONTEND_HOST
+              value: http://localhost
+            - name: EMAIL_VERIFICATION_ENDPOINT
+              value: /email-verification
+            - name: PASSWORD_RESET_CONFIRMATION_ENDPOINT
+              value: /password-reset-confirmation
+            - name: JAVA_OPTS
+              value: "-Xms1G -Xmx1G"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: city-backed-service
+spec:
+  selector:
+    app: city-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
