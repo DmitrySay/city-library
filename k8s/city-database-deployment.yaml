@@ -18,6 +18,8 @@ spec:
           ports:
             - containerPort: 5432
           env:
+            - name: POSTGRES_DB
+              value: "city_library_prod"
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -42,4 +44,4 @@ spec:
       name: http
       port: 5432
       targetPort: 5432
-  type: NodePort
+  type: LoadBalancer
